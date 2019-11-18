@@ -13,7 +13,6 @@ const initialState = {
 };
 
 export const registrationReducer = (state = initialState, action) => {
-  console.log(state);
   switch (action.type) {
     case REGISTRATION_CHANGE_NAME_TEXT:
       return {

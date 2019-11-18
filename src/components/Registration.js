@@ -1,24 +1,36 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-  setNameText,
-  setEmailText,
-  setPasswordText,
-  setConfirmPasswordText
-} from '../store/actions/registrationAction';
+import { addNewUser } from '../store/actions/addUserAction';
 
 class Registration extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+    };
+
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  onSubmit() {
+    const { name, email, password, confirmPassword } = this.state;
+
+    const user = {
+      name: name,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword
+    };
+
+    this.props.onAddNewUser(user);
+  }
+
   render() {
-    const {
-      name,
-      email,
-      password,
-      confirmPassword,
-      onNameChange,
-      onEmailChange,
-      onPasswordChange,
-      onConfirmPasswordChange
-    } = this.props;
+    const { name, email, password, confirmPassword } = this.state;
     return (
       <div>
         <h1>Please Register:</h1>
@@ -30,7 +42,11 @@ class Registration extends Component {
               name='name'
               placeholder='Name'
               value={name}
-              onChange={onNameChange}
+              onChange={e =>
+                this.setState({
+                  name: e.target.value
+                })
+              }
             />
           </div>
           <br />
@@ -40,7 +56,11 @@ class Registration extends Component {
               name='login'
               placeholder='Email'
               value={email}
-              onChange={onEmailChange}
+              onChange={e =>
+                this.setState({
+                  email: e.target.value
+                })
+              }
             />
           </div>
           <br />
@@ -50,7 +70,11 @@ class Registration extends Component {
               name='password'
               placeholder='Password'
               value={password}
-              onChange={onPasswordChange}
+              onChange={e =>
+                this.setState({
+                  password: e.target.value
+                })
+              }
             />
           </div>
           <br />
@@ -60,32 +84,35 @@ class Registration extends Component {
               name='password'
               placeholder='Confirm Password'
               value={confirmPassword}
-              onChange={onConfirmPasswordChange}
+              onChange={e =>
+                this.setState({
+                  confirmPassword: e.target.value
+                })
+              }
             />
           </div>
           <div>
             <br />
             <br />
-            <button type='button'>SIGN UP</button>
+            <button type='button' onClick={this.onSubmit}>
+              SIGN UP
+            </button>
           </div>
         </form>
+        <div>
+          <h3>User count: {this.props.userList.length}</h3>
+        </div>
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  name: state.registration.name,
-  email: state.registration.email,
-  password: state.registration.password,
-  confirmPassword: state.registration.confirmPassword
+  userList: state.userList.arr
 });
 
 const mapDispatchToProps = dispatch => ({
-  onNameChange: e => dispatch(setNameText(e.target.value)),
-  onEmailChange: e => dispatch(setEmailText(e.target.value)),
-  onPasswordChange: e => dispatch(setPasswordText(e.target.value)),
-  onConfirmPasswordChange: e => dispatch(setConfirmPasswordText(e.target.value))
+  onAddNewUser: user => dispatch(addNewUser(user))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Registration);
